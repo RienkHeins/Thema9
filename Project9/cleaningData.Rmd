@@ -1,0 +1,72 @@
+---
+title: "Data Cleaning"
+author: "Rienk Heins"
+date: "10/2/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+cleanData
+```
+
+```{r}
+Fat_diff <- cleanData$Ekcal.B.Fat.gr - cleanData$Ekcal.sixwk.Fat.gr
+sat_Fat_diff <- cleanData$Ekcal.B.Sat.fat.gr - cleanData$Ekcal.sixwk.Sat.fat.gr
+protein_diff <- cleanData$Ekcal.B.Protein - cleanData$Ekcal.sixwk.Protein.gr
+carb_diff <- cleanData$Ekcal.B.Carbohydrates.gr - cleanData$Ekcal.sixwk.Carbohydrates.gr
+zinc_diff <- cleanData$Ekcal.B.Zinc.gr - cleanData$Ekcal.sixwk.Zinc
+vitC_diff <- cleanData$Ekcal.B.VitC.gr - cleanData$Ekcal.sixwk.VitC
+calcium_diff <- cleanData$Ekcal.Calcium.gr - cleanData$Ekcal.sixwk.Calcium
+```
+
+
+```{r}
+cleanDataSet <- data.frame("Age" = cleanData$Age, "Gender" = cleanData$Gender, "Fat_diff" = Fat_diff, "sat_Fat_diff" = sat_Fat_diff, "protein_diff" = protein_diff, "carb_diff" = carb_diff, "zinc_diff" = zinc_diff, "vitamin_C_diff" = vitC_diff, "calcium_diff" = calcium_diff, "Histological_Response" = cleanData$Histological_Response)
+cleanDataSet
+```
+
+```{r}
+cleanDataSet <- cleanDataSet[-(19),]
+cleanDataSet$Histological_Response <- factor(cleanDataSet$Histological_Response, labels = c("No Response", "Partly Response", "Full Response"))
+cleanDataSet
+```
+
+```{r}
+write.csv(x = cleanDataSet, file = "cleanData.csv", row.names = TRUE)
+```
+
+```{r}
+data <- read.table("~/Desktop/roctest.arff", 
+                   sep = ",", 
+                   comment.char = "@")
+names(data) <- c("Instance_number", 
+                 "True Positives",
+                 "False Negatives",
+                 "False Positives",
+                 "True Negatives",
+                 "False Positive Rate",
+                 "True Positive Rate",
+                 "Precision",
+                 "Recall",
+                 "Fallout",
+                 "FMeasure",
+                 "Sample Size",
+                 "Lift",
+                 "Threshold")
+
+head(data)
+
+9:34 AM
+## ROC curve
+# In Weka, create classifier, right-click it and select
+# "visualize threshold curve", "no-recurrence-events"
+# click "Save" and it will store as ARFF (only option)
+# X -- False Positive Rate
+# Y -- True Positive Rate
+
+```
+

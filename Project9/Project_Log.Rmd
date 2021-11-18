@@ -1,0 +1,104 @@
+---
+title: "Lab Journal"
+author: "Rienk Heins"
+date: "9/11/2020"
+output: pdf_document
+---
+
+# Lab Journal
+
+## 08/09/2020
+Decision which project to work on. Discussing the faults in the test EDA
+provided by the project.
+
+## 10/09/2020
+Unpacking the data in Rstudio, reading the supporting literature delivered with
+the data. Inspecting the data
+
+## 11/09/2020
+Inspecting the data further, starting on EDA, formulation of research question.
+
+can the "strength" of the allergic reaction be predicted through machine learning with information about the composition of macro nutrients in the persons diet?
+
+
+
+
+
+## Machine Learning
+
+For the algorithm there is a difference in how bad a wrong prediction is, as the possible predictions are no response, partly response and full response. This is because if a full response is predicted for a partly response that is still better than predicting no response. As with a prediction of no response the diet wouldn't be used of course. So when a wrong prediction is made it is also important to look at if the prediction is right in that there will be a response, as a partly response also is preferable for the patient.
+
+Further the algorithm should be most accurate in guessing the diets with response right. As a working diet guessed wrong will simply not be used which is unfortunate but doesn't harm. But a diet that doesn't work guessed as responding will be used and a patient will then follow this diet with no effects. Not that this will harm the person but it still is a waste of time. Because of this the sensitivity or as it is called in the weka outcome recall will be used as the quality metric.
+
+The algorithms used are ZeroR, OneR, Naiïve Bayes, Simple Logistics, SVM, Nearest Neighbor, J48 and Random Forest, all these algorithms are tested with 10 fold cross validation in the Weka datamining program.
+
+
+```{r}
+library(knitr)
+classifier <- c("ZeroR", "OneR", "Naïve Bayes", "Simple Logistics", "SVM", "Nearest Neighbor(IBK)", "J48", "Random Forest")
+accuracy <- c("41", "29", "29", "35", "35", "47", "32", "41")
+TP_rate <- c("0,412", "0,294", "0,294", "0,353", "0,353", "0,471", "0,324", "0,412")
+FP_rate <- c("0,412", "0,394", "0,369", "0,386", "0,370", "0,262", "0,357", "0,303")
+recall <- c("0,412", "0,294", "0,294", "0,353", "0,353", "0,471", "0,324", "0,412")
+weka_table <- data.frame("classifier" = classifier, "accuracy" = accuracy, "TP rate" = TP_rate, "FP rate" = FP_rate, "recall" = recall)
+kable(weka_table)
+```
+
+### Confusion matrices
+
+ZeroR:
+```{r}
+ZeroR_matrix <- matrix(c(14,0,0,10,0,0,10,0,0), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+ZeroR_matrix
+```
+
+OneR:
+```{r}
+OneR_matrix <- matrix(c(8,3,3,7,0,3,5,3,2), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+OneR_matrix
+```
+
+Naïve Bayes:
+```{r}
+Naïve_Bayes_matrix <- matrix(c(7,4,3,6,1,3,3,5,2), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+Naïve_Bayes_matrix
+```
+
+Simple Logistic
+```{r}
+Simple_matrix <- matrix(c(9,2,3,7,2,1,7,2,1), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+Simple_matrix
+```
+
+SMO:
+```{r}
+SMO_matrix <- matrix(c(8,2,4,6,2,2,6,2,2), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+SMO_matrix
+```
+
+IBK:
+```{r}
+IBK_matrix <- matrix(c(7,3,4,2,7,1,3,5,2), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+IBK_matrix
+```
+
+J48:
+```{r}
+J48_matrix <- matrix(c(8,4,2,5,1,4,4,4,2), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+J48_matrix
+```
+
+Random Forest:
+```{r}
+Random_matrix <- matrix(c(9,3,2,4,2,4,3,4,3), nrow = 3, ncol = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+Random_matrix
+```
+
+
+One of the algorithms used for optimization will be IBK as it not only is the most accurate, it's mostly accurate on no response and partly response and puts most wrongly guessed full response instances as partly response, which is a better mistake than putting it as no response as stated in the second part of the machine learning log.
+
+Further Random Forest will be used as it has the highest accuracy and recall apart from IBK and at least guesses most cases of no response right. It does this as the same rate as Simple Logistics but Simple Logistics seems to guess most cases into no response making it less useful as it just gets a lot of no response right since no response is the most common case.
+
+
+## Optimalization
+
